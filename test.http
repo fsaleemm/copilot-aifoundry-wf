@@ -5,8 +5,8 @@ Content-Type: application/json
     "message": "who is my manager?", 
     "workflow_name": "Main-HR-Agent",
     "parameters": {
-        "userid": "JDOE",
-        "username": "Jason Doe"
+        "userid": "AKHAN",
+        "username": "Ahsan Khan"
     }
 }
 
