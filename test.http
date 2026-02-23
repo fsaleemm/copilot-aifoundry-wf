@@ -1,0 +1,47 @@
+POST http://localhost:7071/api/workflow_httptrigger HTTP/1.1
+Content-Type: application/json
+
+{
+    "message": "who is my manager?", 
+    "workflow_name": "Main-HR-Agent",
+    "parameters": {
+        "userid": "JDOE",
+        "username": "Jason Doe"
+    }
+}
+
+
+###
+
+
+POST http://localhost:7071/api/workflow_httptrigger HTTP/1.1
+Content-Type: application/json
+
+{
+    "message": "userid: JDOE, question: and my title?", 
+    "workflow_name": "Main-HR-Agent",
+    "threadid": "conv_f09253f267c41c79000oHB7XJ9FuZ7j3i2Xh4XGRkd23MOSTsJ"
+}
+
+###
+
+
+POST http://localhost:7071/api/workflow_httptrigger HTTP/1.1
+Content-Type: application/json
+
+{
+    "message": "userid: JDOE, question: what are the health plans you have?", 
+    "workflow_name": "Main-HR-Agent"
+}
+
+###
+
+
+POST http://localhost:7071/api/workflow_httptrigger HTTP/1.1
+Content-Type: application/json
+
+{
+    "message": "userid: JDOE, question: compare them and tell me the differences?", 
+    "workflow_name": "Main-HR-Agent",
+    "threadid": "conv_e01bcf1aaf46c83100Kb7eCnvZlM25WZJ3c2ppIDcSkSOwZRKi"
+}
