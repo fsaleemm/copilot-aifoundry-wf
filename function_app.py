@@ -5,7 +5,7 @@ import os
 import json
 from azure.ai.projects import AIProjectClient
 
-app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 
 @app.route(route="workflow_httptrigger")
@@ -128,11 +128,25 @@ def workflow_httptrigger(req: func.HttpRequest) -> func.HttpResponse:
             }
         )
 
+        reponse_text = response.output_text
+
+        # Log only Main workflow agent message text
+        for item in response.output:
+            created_by = getattr(item, 'created_by', None)
+            if (created_by and created_by.get('agent', {}).get('name') == workflow_name
+                    and item.type == 'message' and item.content):
+                for content_item in item.content:
+                    if hasattr(content_item, 'text'):
+                        reponse_text = content_item.text  # Capture the last message text from the workflow agent
+                        logging.info(f"[{workflow_name}] {content_item.text}")
+
         # Build response with exact format requested
         result = {
-            "message": response.output_text,
+            "message": reponse_text,
             "threadId": response.conversation.id
         }
+
+        logging.info(f"Workflow response - threadId: {result['threadId']}, message: {result['message']}")
 
         return func.HttpResponse(
             json.dumps(result, ensure_ascii=False),
