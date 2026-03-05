@@ -3,9 +3,17 @@ import logging
 from azure.identity import DefaultAzureCredential
 import os
 import json
+import re
 from azure.ai.projects import AIProjectClient
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
+
+# Regex to match citation markers like 【7:0†source】
+_CITATION_PATTERN = re.compile(r"[\u3010][^\u3011]*[\u3011]")
+
+def clean_citation_markers(text: str) -> str:
+    """Remove AI-generated citation markers (e.g. 【7:0†source】) from text."""
+    return _CITATION_PATTERN.sub("", text).strip()
 
 
 @app.route(route="workflow_httptrigger")
@@ -139,6 +147,9 @@ def workflow_httptrigger(req: func.HttpRequest) -> func.HttpResponse:
                     if hasattr(content_item, 'text'):
                         reponse_text = content_item.text  # Capture the last message text from the workflow agent
                         logging.info(f"[{workflow_name}] {content_item.text}")
+
+        # Clean citation markers from the response text
+        reponse_text = clean_citation_markers(reponse_text)
 
         # Build response with exact format requested
         result = {
